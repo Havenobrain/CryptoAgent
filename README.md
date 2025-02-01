@@ -1,110 +1,91 @@
-Установка и запуск
-1. Клонирование репозитория
-Сначала необходимо склонировать этот репозиторий:
+1. Cloning the repository
+First, you need to download the project from GitHub.
 
-git clone --recurse-submodules https://github.com/Havenobrain/CryptoAgent.git – это надо скопировать и вставить в терминал и нажать enter
+Clone the repository with submodules:
 
-cd CryptoAgent – это надо скопировать, вставить в терминал и нажать enter
+git clone --recurse-submodules https://github.com/Havenobrain/TwitterCryptoAgent.git – enter this into the terminal
 
+cd TwitterCryptoAgent – enter this into the terminal
 
-Если вы уже клонировали репозиторий без этого флага, добавьте сабмодули вручную:
+Installing dependencies
+Go to the agent-twitter-client folder and install all dependencies:
+cd agent-twitter-client – enter this into the terminal
+npm install – enter this into the terminal
+cd .. – enter this into the terminal
 
-cd CryptoAgent – это надо скопировать, вставить в терминал и нажать enter
+Now go to the twitter-scraper-finetune folder and install dependencies:
 
-git submodule update --init --recursive – это надо скопировать, вставить в терминал и нажать enter
+cd twitter-scraper-finetune – enter this into the terminal
+npm install – enter this into the terminal
+cd .. – enter this into the terminal
 
-
-Потом надо установить зависимости:
-
-pip install -r requirements.txt – это надо скопировать, вставить в терминал и нажать enter
-
-
-2. Установка зависимостей
-Перейди в каждую папку зависимостей и установи нужные пакеты:
-
-Установка зависимостей для agent-twitter-client:
-
-cd agent-twitter-client – это надо скопировать и вставить в терминал и нажать 
-
-npm install – это надо скопировать и вставить в терминал и нажать 
-
-cd .. – это надо скопировать и вставить в терминал и нажать 
-
-cd twitter-scraper-finetune – это надо скопировать и вставить в терминал и нажать 
-
-npm install – это надо скопировать и вставить в терминал и нажать 
-
-Потом опять:
-
-cd .. – это надо скопировать и вставить в терминал и нажать
-
-cd agent-twitter-client – это надо скопировать и вставить в терминал и нажать
-
-
-Установка Python-зависимостей для основного проекта:
-
-pip install -r requirements.txt 
-
-
-3. Настройка .env файла
-Создай в корневой папке agent-twitter-client файл .env и добавь в него следующие переменные:
-
-
+Configuring the .env file
+Before starting the agent, you need to create a .env file inside the twitter-scraper-finetune folder and add your Twitter credentials:
 TWITTER_USERNAME=your_twitter_username
 TWITTER_PASSWORD=your_twitter_password
 TWITTER_EMAIL=your_twitter_email
-PROXY_URL=
-TWITTER_API_KEY=
-TWITTER_API_SECRET_KEY=
-TWITTER_ACCESS_TOKEN=
-TWITTER_ACCESS_TOKEN_SECRET=
 
+This is necessary for the bot to log in and collect tweets.
 
-4. Запуск бота
-Перейди в папку agent-twitter-client и запусти TwitterAgent.js:
+Configuring keywords and filters
+To let the bot know which tweets to collect, create two text files inside the twitter-scraper-finetune folder:
+Keywords (keywords.txt)
+Go to src/twitter/keywords.txt
+Add words or phrases that must be in a tweet for it to be processed.
 
-cd agent-twitter-client – это надо скопировать и вставить в терминал и нажать
+Example keywords.txt:
+Bitcoin
+Crypto
+Investing
+Ethereum
 
-node TwitterAgent.js – это надо скопировать и вставить в терминал и нажать
+Filter words (filter.txt)
+Go to src/twitter/filter.txt
+Add words that should cause a tweet to be ignored.
 
+Example filter.txt:
+scam
+giveaway
+free money
 
-Если всё настроено правильно, бот авторизуется в Twitter и начнёт мониторинг твитов.
+If a tweet contains at least one word from keywords.txt and does not contain any words from filter.txt, it will be processed.
 
+Running the bot
+Go to the twitter-scraper-finetune folder and start monitoring tweets:
+cd twitter-scraper-finetune – enter this into the terminal
+npm run twitter -- benny_cryp36211 – enter this into the terminal
 
-5. Логирование и сохранение данных
-Все собранные данные сохраняются в файл tweets.json внутри agent-twitter-client.
-Если файл не существует, он будет создан автоматически.
+If everything is set up correctly, the bot will start collecting tweets, paraphrasing them in a philosophical style, and publishing them.
 
-Возможные ошибки
-Ошибка при установке зависимостей npm
-Если во время npm install появляются ошибки, убедись, что у тебя установлена актуальная версия Node.js (не ниже 18.x).
+Changing bot settings
+Changing keywords and filters
+Modify the contents of keywords.txt if you want to track different topics.
+Edit filter.txt to exclude unwanted tweets.
 
-Ошибка при авторизации
-Проверь правильность данных в .env.
+Changing the tweet posting interval
+By default, the bot posts tweets every 2 hours.
+To change the interval, open TwitterPipeline.js and find this line:
 
-Бот не находит твиты
-Убедись, что файлы keywords.txt и filter.txt созданы и содержат корректные ключевые слова.
+setInterval(() => this.publishScheduledTweet(), 2 * 60 * 60 * 1000);
 
-6. Что можно изменять:
+Change 2 * 60 * 60 * 1000 to the desired interval:
 
-можно изменять ключевые слова по которым идет поиск в keywords.txt
+Every 3 hours
+setInterval(() => this.publishScheduledTweet(), 3 * 60 * 60 * 1000);
 
-можно изменять слова по которым идет фильтрация в filter.txt
+Every 5 minutes
+setInterval(() => this.publishScheduledTweet(), 5 * 60 * 1000);
 
-можно изменять время когда делать парсинг и не делать парсинг в файле TwitterAgent.js (это вообще самый главный файл):
+Once per day
+setInterval(() => this.publishScheduledTweet(), 24 * 60 * 60 * 1000);
 
-"   const WORK_HOURS_START = parseInt(process.env.WORK_HOURS_START, 10) || 9;
-    const WORK_HOURS_END = parseInt(process.env.WORK_HOURS_END, 10) || 21;"
-Последние цифры (9 и 21) можно менять
+Changing the monitored Twitter account
+To track a different Twitter account, update the parameter in TwitterPipeline.js:
 
-Можно менять имена аккаунтов, которые надо отслеживать. Тоже в файле TwitterAgent.js:
+this.username = "New_Account";
 
-const accountsToScrape = ['benny_cryp36211', ]; – прямо сюда через запятую писать название аккаунта в кавычках.
-
-Можно изменять интервал отслеживания:
-
-    setInterval(() => processTweets(scraper), INTERVAL_MINUTES * 60 * 1000);
-
-7. Как уже было написано ранее, агент заходит через ваш аккаунт и начинает работать. ЧТобы он зашел надо зайти в файл .env и заполнить там данные. А именно: логин, пароль, и почту на которой аккаунт в twitter
-
-Пока что агент не может публиковать твиты. Потому что пока что мы это не включали в задание. Можем потом добавить.
+How it works?
+The bot collects tweets from the specified account or based on keywords.
+It filters tweets, checking if they contain keywords and do not contain filtered words.
+It paraphrases tweets in a philosophical style (e.g., replacing "crypto" with "digital gold").
+It publishes paraphrased tweets every 2 hours (or at another specified interval).
