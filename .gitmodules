@@ -1,6 +1,6 @@
 [submodule "agent-twitter-client"]
 	path = agent-twitter-client
-	url = https://github.com/elizaOS/agent-twitter-client.git
+	url = https://github.com/Havenobrain/agent-twitter-client.git
 [submodule "twitter-scraper-finetune"]
 	path = twitter-scraper-finetune
-	url = https://github.com/elizaOS/twitter-scraper-finetune.git
+	url = https://github.com/Havenobrain/twitter-scraper-finetune.git
